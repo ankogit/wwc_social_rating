@@ -1,0 +1,11 @@
+version: "0.0.0"
+
+port: 1337
+
+messages:
+  responses:
+    inline_content_title: "Название"
+    inline_content_description: "Описание"
+    no_stats: "Пусто"
+  errors:
+    unknown_command: "Команда не найдена"

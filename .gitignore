@@ -1,0 +1,7 @@
+.idea
+.DS_Store
+configs/config.ini
+.env
+*.db
+.bin
+pgdata

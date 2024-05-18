@@ -6,6 +6,9 @@ build:
 run: build
 	./.bin/bot
 
+buildAndRun:
+	make build && make run
+
 build-image:
 	docker build -t template_bot:0.1 .
 

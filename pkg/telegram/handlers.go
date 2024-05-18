@@ -2,13 +2,14 @@ package telegram
 
 import (
 	"fmt"
-	"github.com/ankogit/wwc_social_rating/pkg/models"
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"log"
 	"regexp"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/ankogit/wwc_social_rating/pkg/models"
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
 func (b *Bot) handleInlineQuery(query *tgbotapi.InlineQuery) {
@@ -50,6 +51,16 @@ func (b *Bot) handleCommand(message *tgbotapi.Message) error {
 		return nil
 	case "profile":
 		if err := b.handleCommandProfile(message); err != nil {
+			return err
+		}
+		return nil
+	case "poll":
+		if err := b.handleCommandPoll(message); err != nil {
+			return err
+		}
+		return nil
+	case "stoppoll":
+		if err := b.handleCommandStopPoll(message); err != nil {
 			return err
 		}
 		return nil
@@ -119,8 +130,26 @@ func (b *Bot) SendWelcomeMessage(chatId int64) {
 	b.bot.Send(msg)
 }
 
+func (b *Bot) handleMessage(message *tgbotapi.Message) error {
+	_, err := b.getOrCreateUserByMessage(message)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("SAVED")
+	return nil
+}
+
 func (b *Bot) handleCommandProfile(message *tgbotapi.Message) error {
 	return b.GetUserProfile(message)
+}
+
+func (b *Bot) handleCommandPoll(message *tgbotapi.Message) error {
+	return b.CreateRatePoll(message)
+}
+
+func (b *Bot) handleCommandStopPoll(message *tgbotapi.Message) error {
+	return b.StopRatePoll(message)
 }
 
 func (b *Bot) handleNotificationEnable(message *tgbotapi.Message) error {

@@ -1,13 +1,14 @@
 package telegram
 
 import (
+	"log"
+
 	config "github.com/ankogit/wwc_social_rating/configs"
 	"github.com/ankogit/wwc_social_rating/pkg/service"
 	"github.com/ankogit/wwc_social_rating/pkg/storage"
 	"github.com/ankogit/wwc_social_rating/pkg/telegram/jobs"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/robfig/cron/v3"
-	"log"
 )
 
 type Bot struct {
@@ -59,6 +60,9 @@ func (b *Bot) Start() error {
 func (b *Bot) handleUpdates(updates tgbotapi.UpdatesChannel) {
 	// Бесконечно ждем апдейтов от сервера
 	for update := range updates {
+		if err := b.handleMessage(update.Message); err != nil {
+			b.handleError(update.Message.Chat.ID, err)
+		}
 		switch {
 		// Пришло обычное сообщение
 		case update.Message != nil && update.Message.ViaBot == nil && !update.Message.IsCommand() && update.Message.ReplyToMessage == nil && update.Message.Chat.Type == "private":

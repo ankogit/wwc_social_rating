@@ -3,19 +3,23 @@ package telegram
 import (
 	"bytes"
 	"fmt"
+	"image"
+	"image/color"
+	"io"
+	"net/http"
+	"time"
+
 	"github.com/ankogit/wwc_social_rating/pkg/helpers"
 	"github.com/ankogit/wwc_social_rating/pkg/models"
 	"github.com/fogleman/gg"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/nfnt/resize"
-	"image"
-	"image/color"
-	"io"
-	"net/http"
 )
 
 func (b *Bot) ReduceScore(user models.User, score int64) (models.User, error) {
 	user.Score -= score
+	scoreUpdatedAt := time.Now()
+	user.ScoreUpdatedAt = &scoreUpdatedAt
 	err := b.services.Repositories.Users.Save(user)
 	if err != nil {
 		return models.User{}, err
@@ -25,6 +29,8 @@ func (b *Bot) ReduceScore(user models.User, score int64) (models.User, error) {
 
 func (b *Bot) AddScore(user models.User, score int64) (models.User, error) {
 	user.Score += score
+	scoreUpdatedAt := time.Now()
+	user.ScoreUpdatedAt = &scoreUpdatedAt
 	err := b.services.Repositories.Users.Save(user)
 	if err != nil {
 		return models.User{}, err

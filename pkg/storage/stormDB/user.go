@@ -25,6 +25,15 @@ func (r *UserRepository) Get(id int64) (models.User, error) {
 	}
 	return user, nil
 }
+
+func (r *UserRepository) GetByUsername(username string) (user models.User, err error) {
+	err = r.db.One("UserName", username, &user)
+	if err != nil {
+		return models.User{}, err
+	}
+	return user, nil
+}
+
 func (r *UserRepository) Delete(user models.User) error {
 	return r.db.DeleteStruct(&user)
 }

@@ -44,6 +44,9 @@ func (b *Bot) handleCommand(message *tgbotapi.Message) error {
 	case "start":
 		b.SendWelcomeMessage(message.Chat.ID)
 		return nil
+	case "help":
+		b.SendWelcomeMessage(message.Chat.ID)
+		return nil
 	case "profile":
 		if err := b.handleCommandProfile(message); err != nil {
 			return err
@@ -124,9 +127,21 @@ func (b *Bot) SendCallbackAnswer(query *tgbotapi.CallbackQuery, text string) {
 		CallbackQueryID: query.ID,
 	})
 }
-
 func (b *Bot) SendWelcomeMessage(chatId int64) {
-	msg := tgbotapi.NewMessage(chatId, "Hello world! Type @"+b.bot.Self.UserName+" in message field. \nv. "+b.version+"")
+	msg := tgbotapi.NewMessage(chatId, "Добро пожаловать в WWC Social Rating Bot!\n\n"+
+		"Этот уникальный бот создан для формирования общего социального рейтинга в вашем Telegram-сообществе. С его помощью вы сможете:\n\n"+
+		"- Отслеживать достойных людей и тех, кто подводит. Не оставляйте говнюков без внимания!\n"+
+		"- Наказывать за невыполненные обещания. Сделаем вашу группу более ответственным и надежным местом.\n"+
+		"- Вознаграждать за вклад в open-source проекты. Цените тех, кто вносит значительный вклад в развитие.\n"+
+		"- Красиво делиться своим профилем. Покажите всем свои достижения и рейтинг.\n"+
+		"- Геймифицировать взаимодействие в группе. Превратите рутинные задачи в увлекательную игру!\n\n"+
+		"Возможности:\n"+
+		"- /rate <USERNAME> - Оценка пользователя (рейтинг). Дайте обратную связь каждому участнику сообщества.\n"+
+		"- /award <USERNAME> - Запуск голосования на награду пользователя. Позвольте сообществу выбрать лучших из лучших.\n"+
+		"- /stoppoll <MESSAGE ID> - Остановка голосования, подведение итогов.\n"+
+		"- /profile - Получить карточку своего профиля.\n"+
+		"- /profile <USERNAME> - Получить карточку профиля пользователя.\n\n"+
+		"Присоединяйтесь к WWC Social Rating Bot и сделайте ваше сообщество более активным, справедливым и увлекательным!")
 	b.bot.Send(msg)
 }
 

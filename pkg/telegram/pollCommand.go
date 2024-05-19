@@ -173,6 +173,7 @@ func (b *Bot) CreateRatePoll(message *tgbotapi.Message) error {
 func (b *Bot) StopRatePoll(message *tgbotapi.Message) error {
 	if message.CommandArguments() == "" {
 		b.bot.Send(tgbotapi.NewMessage(message.Chat.ID, fmt.Sprintf(`Введите message ID`)))
+		return nil
 	}
 	messageId, err := strconv.Atoi(message.CommandArguments())
 	if err != nil {

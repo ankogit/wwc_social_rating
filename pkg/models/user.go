@@ -8,6 +8,7 @@ type User struct {
 	LastName       string
 	UserName       string
 	Score          int64
+	IsLastUp       bool
 	Achievements   string
 	ScoreUpdatedAt *time.Time
 }

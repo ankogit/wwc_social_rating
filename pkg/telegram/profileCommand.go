@@ -8,9 +8,18 @@ import (
 )
 
 func (b *Bot) GetUserProfile(message *tgbotapi.Message) error {
-	userData, err := b.getOrCreateUserByMessage(message)
-	if err != nil {
-		return err
+	var userData models.User
+	var err error
+	if message.CommandArguments() != "" {
+		userData, err = b.services.Repositories.Users.GetByUsername(message.CommandArguments())
+		if err != nil {
+			return err
+		}
+	} else {
+		userData, err = b.getOrCreateUserByMessage(message.From)
+		if err != nil {
+			return err
+		}
 	}
 
 	if generatedFile, err := b.GenerateImageUserCard(userData); err == nil {
@@ -44,19 +53,19 @@ func InlineKeyboardButtonMarkup(userId int64) tgbotapi.InlineKeyboardMarkup {
 
 }
 
-func (b *Bot) getOrCreateUserByMessage(message *tgbotapi.Message) (models.User, error) {
-	if message == nil {
+func (b *Bot) getOrCreateUserByMessage(tgUser *tgbotapi.User) (models.User, error) {
+	if tgUser == nil {
 		return models.User{}, nil
 	}
-	userData, err := b.services.Repositories.Users.Get(message.From.ID)
+	userData, err := b.services.Repositories.Users.Get(tgUser.ID)
 
 	if err != nil {
 		if "not found" == err.Error() {
 			var user models.User
-			user.ID = message.From.ID
-			user.FirstName = message.From.FirstName
-			user.LastName = message.From.LastName
-			user.UserName = message.From.UserName
+			user.ID = tgUser.ID
+			user.FirstName = tgUser.FirstName
+			user.LastName = tgUser.LastName
+			user.UserName = tgUser.UserName
 			user.Score = 10
 			b.services.Repositories.Users.Save(user)
 

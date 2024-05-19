@@ -27,12 +27,6 @@ func (b *Bot) handleInlineQuery(query *tgbotapi.InlineQuery) {
 				Text: "/profile",
 				//ParseMode: "markdown",
 			},
-			//	tgbotapi.PhotoConfig{
-			//	BaseFile: tgbotapi.BaseFile{
-			//		BaseChat: tgbotapi.BaseChat{ChatID: query.From.ID},
-			//		File:     photoFileBytes,
-			//	},
-			//},
 		})
 
 	if _, err := b.bot.Request(tgbotapi.InlineConfig{
@@ -42,6 +36,7 @@ func (b *Bot) handleInlineQuery(query *tgbotapi.InlineQuery) {
 		Results:       resources}); err != nil {
 		log.Println(err)
 	}
+
 }
 
 func (b *Bot) handleCommand(message *tgbotapi.Message) error {
@@ -54,8 +49,13 @@ func (b *Bot) handleCommand(message *tgbotapi.Message) error {
 			return err
 		}
 		return nil
-	case "poll":
-		if err := b.handleCommandPoll(message); err != nil {
+	case "rate":
+		if err := b.handleCommandRate(message); err != nil {
+			return err
+		}
+		return nil
+	case "award":
+		if err := b.handleCommandAward(message); err != nil {
 			return err
 		}
 		return nil
@@ -131,12 +131,14 @@ func (b *Bot) SendWelcomeMessage(chatId int64) {
 }
 
 func (b *Bot) handleMessage(message *tgbotapi.Message) error {
-	_, err := b.getOrCreateUserByMessage(message)
+	if message == nil || message.From == nil {
+		return nil
+	}
+	_, err := b.getOrCreateUserByMessage(message.From)
 	if err != nil {
 		return err
 	}
 
-	fmt.Println("SAVED")
 	return nil
 }
 
@@ -144,8 +146,11 @@ func (b *Bot) handleCommandProfile(message *tgbotapi.Message) error {
 	return b.GetUserProfile(message)
 }
 
-func (b *Bot) handleCommandPoll(message *tgbotapi.Message) error {
+func (b *Bot) handleCommandRate(message *tgbotapi.Message) error {
 	return b.CreateRatePoll(message)
+}
+func (b *Bot) handleCommandAward(message *tgbotapi.Message) error {
+	return b.CreateAchievementPoll(message)
 }
 
 func (b *Bot) handleCommandStopPoll(message *tgbotapi.Message) error {

@@ -58,8 +58,8 @@ func (h *Handler) getTestPage(c *gin.Context) {
 		newSizeAvatarImage = resize.Resize(96, 96, avatarImage, resize.Lanczos3)
 	}
 
-	const height = 128
-	const wight = 512
+	const height = 160
+	const wight = 544
 
 	bg, err := gg.LoadImage("./storage/images/tmplate_bot.png")
 	if err != nil {

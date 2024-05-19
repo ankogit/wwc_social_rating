@@ -66,7 +66,7 @@ func (b *Bot) getOrCreateUserByMessage(tgUser *tgbotapi.User) (models.User, erro
 			user.FirstName = tgUser.FirstName
 			user.LastName = tgUser.LastName
 			user.UserName = tgUser.UserName
-			user.Score = 10
+			user.Score = 0
 			b.services.Repositories.Users.Save(user)
 
 			userData = user

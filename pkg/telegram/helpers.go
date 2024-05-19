@@ -199,7 +199,6 @@ func generateAchievents(achStr string) UserAchievements {
 	achievements := NewUserAchievements()
 
 	achievementsStr := strings.Split(achStr, ",")
-	achievements.IncrementAchievement("heart")
 
 	for _, achievement := range achievementsStr {
 		if spite := getSpriteByName(achievement); spite != nil {

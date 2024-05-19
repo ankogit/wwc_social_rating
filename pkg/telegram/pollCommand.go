@@ -86,7 +86,7 @@ func (b *Bot) CreateAchievementPoll(message *tgbotapi.Message) error {
 		Type:     "regular",
 		Options: []string{
 			fmt.Sprintf(`%s - медаль за заслуги`, AchievementsEmoji[AchievementMedal]),
-			fmt.Sprintf(`%s - клоут`, AchievementsEmoji[AchievementClown]),
+			fmt.Sprintf(`%s - ну ты клоун`, AchievementsEmoji[AchievementClown]),
 			fmt.Sprintf(`%s - это любовь`, AchievementsEmoji[AchievementHeart]),
 			fmt.Sprintf(`%s - ну это лайк`, AchievementsEmoji[AchievementLike]),
 			fmt.Sprintf(`%s - забавный чел`, AchievementsEmoji[AchievementFun]),

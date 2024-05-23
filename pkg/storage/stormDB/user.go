@@ -27,6 +27,9 @@ func (r *UserRepository) Get(id int64) (models.User, error) {
 }
 
 func (r *UserRepository) GetByUsername(username string) (user models.User, err error) {
+	if len(username) > 1 && username[0] == '@' {
+		username = username[1:]
+	}
 	err = r.db.One("UserName", username, &user)
 	if err != nil {
 		return models.User{}, err

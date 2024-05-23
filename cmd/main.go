@@ -3,6 +3,13 @@ package main
 import (
 	"context"
 	"errors"
+	"log"
+	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
+
 	config "github.com/ankogit/wwc_social_rating/configs"
 	"github.com/ankogit/wwc_social_rating/pkg/server"
 	"github.com/ankogit/wwc_social_rating/pkg/server/handler"
@@ -14,12 +21,6 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	_ "github.com/lib/pq"
 	"github.com/robfig/cron/v3"
-	"log"
-	"net/http"
-	"os"
-	"os/signal"
-	"syscall"
-	"time"
 )
 
 func main() {

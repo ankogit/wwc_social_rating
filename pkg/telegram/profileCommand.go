@@ -75,5 +75,10 @@ func (b *Bot) getOrCreateUserByMessage(tgUser *tgbotapi.User) (models.User, erro
 			return models.User{}, err
 		}
 	}
+
+	userData.FirstName = tgUser.FirstName
+	userData.LastName = tgUser.LastName
+	b.services.Repositories.Users.Save(userData)
+
 	return userData, nil
 }

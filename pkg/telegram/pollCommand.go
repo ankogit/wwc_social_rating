@@ -171,13 +171,19 @@ func (b *Bot) CreateRatePoll(message *tgbotapi.Message) error {
 }
 
 func (b *Bot) StopRatePoll(message *tgbotapi.Message) error {
-	if message.CommandArguments() == "" {
-		b.bot.Send(tgbotapi.NewMessage(message.Chat.ID, fmt.Sprintf(`Введите message ID`)))
+	var messageId int
+	var err error
+
+	if message.CommandArguments() != "" {
+		messageId, err = strconv.Atoi(message.CommandArguments())
+		if err != nil {
+			return err
+		}
+	} else if message.ReplyToMessage != nil && message.ReplyToMessage.MessageID != 0 {
+		messageId = message.ReplyToMessage.MessageID
+	} else {
+		b.bot.Send(tgbotapi.NewMessage(message.Chat.ID, fmt.Sprintf(`Введите Message ID или отправте в Reply на опрос`)))
 		return nil
-	}
-	messageId, err := strconv.Atoi(message.CommandArguments())
-	if err != nil {
-		return err
 	}
 
 	poll, err := b.bot.StopPoll(tgbotapi.StopPollConfig{

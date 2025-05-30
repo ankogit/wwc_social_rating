@@ -1,6 +1,7 @@
 package telegram
 
 import (
+	"fmt"
 	"log"
 
 	config "github.com/ankogit/wwc_social_rating/configs"
@@ -35,7 +36,7 @@ func NewBot(
 
 func (b *Bot) CronInit(scheduler *cron.Cron) {
 	telegramNotifications := jobs.NewTelegramNotifications(b)
-	b.cronService = service.NewCronService(scheduler, b.chatRepository, telegramNotifications)
+	b.cronService = service.NewCronService(scheduler, b.services.Repositories, telegramNotifications)
 	b.cronService.Init()
 }
 func (b *Bot) CronStart() {
@@ -60,6 +61,9 @@ func (b *Bot) Start() error {
 func (b *Bot) handleUpdates(updates tgbotapi.UpdatesChannel) {
 	// Бесконечно ждем апдейтов от сервера
 	for update := range updates {
+		if update.Poll != nil {
+			fmt.Println("POLL", update.Poll)
+		}
 		if err := b.handleMessage(update.Message); err != nil {
 			b.handleError(update.Message.Chat.ID, err)
 		}

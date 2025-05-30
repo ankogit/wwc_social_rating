@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+
 	"github.com/ankogit/wwc_social_rating/pkg/models"
 	"github.com/ankogit/wwc_social_rating/pkg/storage"
 	"github.com/ankogit/wwc_social_rating/pkg/telegram/jobs"
@@ -11,14 +12,14 @@ import (
 
 type CronService struct {
 	Scheduler             *cron.Cron
-	ChatRepository        storage.ChatRepository
+	Repositories          *storage.Repositories
 	TelegramNotifications *jobs.TelegramNotifications
 }
 
-func NewCronService(sh *cron.Cron, r storage.ChatRepository, tn *jobs.TelegramNotifications) *CronService {
+func NewCronService(sh *cron.Cron, r *storage.Repositories, tn *jobs.TelegramNotifications) *CronService {
 	return &CronService{
 		Scheduler:             sh,
-		ChatRepository:        r,
+		Repositories:          r,
 		TelegramNotifications: tn,
 	}
 }
@@ -27,7 +28,7 @@ func (c *CronService) Start() {
 }
 func (c *CronService) Init() {
 
-	chats, err := c.ChatRepository.All()
+	chats, err := c.Repositories.Chats.All()
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -45,12 +46,22 @@ func (c *CronService) Init() {
 				fmt.Println(err)
 			}
 			chat.EntryId = jobID
-			if err := c.ChatRepository.Save(chat); err != nil {
+			if err := c.Repositories.Chats.Save(chat); err != nil {
 				fmt.Println(err)
 			}
 		}
 
 	}
+
+	// c.Scheduler.AddFunc("1 * * * *", func() {
+	// 	c.Repositories.Polls.AllActive()
+
+	// 	c.TelegramNotifications.StopPoll(&tgbotapi.Message{
+	// 		Chat: &tgbotapi.Chat{
+	// 			ID: chat.ID,
+	// 		},
+	// 	})
+	// })
 }
 
 func (c *CronService) SetJob(chat *models.Chat, notificationCron string) (cron.EntryID, error) {

@@ -2,6 +2,7 @@ package telegram
 
 import (
 	"errors"
+
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
@@ -14,7 +15,8 @@ func (b *Bot) handleError(chatID int64, err error) {
 
 	switch err {
 	case errUnknownCommand:
-		messageText = b.messages.Errors.UnknownCommand
+		return
+		// messageText = b.messages.Errors.UnknownCommand
 	default:
 		messageText = err.Error()
 	}

@@ -17,3 +17,8 @@ func NewTelegramNotifications(bot TelegramBot) *TelegramNotifications {
 func (t *TelegramNotifications) NotifyStats(message *tgbotapi.Message) error {
 	return t.Bot.SendTestMessage(message)
 }
+
+func (t *TelegramNotifications) StopPoll(message *tgbotapi.Message) error {
+
+	return t.Bot.SendTestMessage(message)
+}

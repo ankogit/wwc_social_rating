@@ -8,11 +8,13 @@ import (
 type Repositories struct {
 	Chats ChatRepository
 	Users UserRepository
+	Polls PollRepository
 }
 
 func NewRepositories(db *storm.DB) *Repositories {
 	return &Repositories{
 		Chats: stormDB.NewChatRepository(db),
 		Users: stormDB.NewUserRepository(db),
+		Polls: stormDB.NewPollRepository(db),
 	}
 }

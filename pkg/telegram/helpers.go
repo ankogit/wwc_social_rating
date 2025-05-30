@@ -183,6 +183,12 @@ func (b *Bot) GenerateImageUserCard(user models.User) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	//добавляем дату
+	currentTime := time.Now()
+	formattedDate := currentTime.Format("02-01-2006")
+	dc.DrawStringAnchored(fmt.Sprintf("%v", formattedDate), 77, 16, 0.5, 0.5)
+
 	dc.Clip()
 
 	var buffImage bytes.Buffer

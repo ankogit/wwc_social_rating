@@ -10,5 +10,6 @@ type User struct {
 	Score          int64
 	IsLastUp       bool
 	Achievements   string
+	ProfileURL     string
 	ScoreUpdatedAt *time.Time
 }

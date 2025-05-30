@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/ankogit/wwc_social_rating/pkg/models"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
@@ -96,7 +97,7 @@ func (b *Bot) CreateAchievementPoll(message *tgbotapi.Message) error {
 		},
 		// CorrectOptionID: 1,
 		IsAnonymous: false,
-		// OpenPeriod:      20,
+		OpenPeriod:  3600,
 	}
 	pollMessage, err := b.bot.Send(poll)
 	if err != nil {
@@ -142,10 +143,10 @@ func (b *Bot) CreateRatePoll(message *tgbotapi.Message) error {
 		return nil
 	}
 
-	if userData.ScoreUpdatedAt != nil && time.Since(*userData.ScoreUpdatedAt) < 24*time.Hour {
-		b.bot.Send(tgbotapi.NewMessage(message.Chat.ID, "Изменять рейтинг пользователя можно раз в сутки"))
-		return nil
-	}
+	// if userData.ScoreUpdatedAt != nil && time.Since(*userData.ScoreUpdatedAt) < 24*time.Hour {
+	// 	b.bot.Send(tgbotapi.NewMessage(message.Chat.ID, "Изменять рейтинг пользователя можно раз в сутки"))
+	// 	return nil
+	// }
 
 	poll := tgbotapi.SendPollConfig{
 		BaseChat: tgbotapi.BaseChat{
@@ -160,13 +161,23 @@ func (b *Bot) CreateRatePoll(message *tgbotapi.Message) error {
 		},
 		// CorrectOptionID: 1,
 		IsAnonymous: false,
-		// OpenPeriod:      20,
+		// OpenPeriod:  16,
+		CloseDate: int(time.Now().Add(time.Second * 5).Unix()),
 	}
 	pollMessage, err := b.bot.Send(poll)
 	if err != nil {
 		return nil
 	}
 	b.bot.Send(tgbotapi.NewMessage(message.Chat.ID, fmt.Sprintf(`Message ID: %s`, strconv.Itoa(pollMessage.MessageID))))
+
+	b.services.Repositories.Polls.Save(models.Poll{
+		ID:        message.MessageID,
+		PollID:    pollMessage.Poll.ID,
+		UserID:    userData.ID,
+		IsClosed:  false,
+		CreatedAt: time.Now(),
+	})
+	fmt.Println(b.services.Repositories.Polls.AllActive())
 	return nil
 }
 
